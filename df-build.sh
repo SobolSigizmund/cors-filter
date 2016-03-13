@@ -3,8 +3,11 @@ mvn dependency:copy-dependencies || { echo "Error: maven dependency:copy-depende
 echo "Cleaning up existing zip if any..."
 rm -f libs.zip || { echo "Error: Cleaning lib zip"; exit 1; }
 rm -f build.zip || { echo "Error: Cleaning binaries zip"; exit 1; }
+rm -f testbuild.zip || { echo "Error: Cleaning test binaries zip"; exit 1; }
+mkdir -p target/test-classes;touch target/test-classes/placeholder.class || { echo "Error: Creating placeholder for test-classes"; exit 1; }
 echo "Zipping artifacts begin..."
 zip libs.zip $(git ls-files -o | grep -e target/dependency/.*jar) || { echo "Error: Zipping libs failed"; exit 1; }
 zip build.zip $(git ls-files -o | grep -e target/classes/.*class) || { echo "Error: Zipping binaries failed"; exit 1; }
+zip testbuild.zip $(git ls-files -o | grep -e target/test-classes/.*class) || { echo "Error: Zipping test binaries failed"; exit 1; }
 echo "Zipping artifacts DONE!!!"
-# Modified by Insights Service at 2016-03-03 12:29:46.611075
+# Modified by Insights Service at 2016-03-13 08:12:51.987945
