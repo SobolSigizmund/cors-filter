@@ -10,4 +10,4 @@ zip libs.zip $(git ls-files -o | grep -e target/dependency/.*jar) || { echo "Err
 zip build.zip $(git ls-files -o | grep -e target/classes/.*class) || { echo "Error: Zipping binaries failed"; exit 1; }
 zip testbuild.zip $(git ls-files -o | grep -e target/test-classes/.*class) || { echo "Error: Zipping test binaries failed"; exit 1; }
 echo "Zipping artifacts DONE!!!"
-# Modified by Insights Service at 2016-03-18 07:05:09.864009
+# Modified by Insights Service at 2016-03-18 08:14:58.782025
