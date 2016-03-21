@@ -2,8 +2,8 @@ addons:
   artifacts:
     debug: true
     paths: [libs.zip, build.zip, testbuild.zip]
-    target_paths: b9be02e7-c5ad-4cdf-b88f-0d3868b63105
+    target_paths: b51ac953-805e-4c64-8ea6-9f92476049cf
 after_success: [./df-build.sh]
 jdk: [oraclejdk7, openjdk7, openjdk6]
 language: java
-# Modified by Insights Service at 2016-03-20 14:21:32.346937
+# Modified by Insights Service at 2016-03-21 07:12:07.024851
