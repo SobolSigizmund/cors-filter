@@ -1,5 +1,9 @@
+addons:
+  artifacts:
+    debug: true
+    paths: [libs.zip, build.zip, testbuild.zip]
+    target_paths: 245d42be-3f9a-4a69-983b-57ca0a6ee17e
+after_success: [./df-build.sh]
+jdk: [oraclejdk7, openjdk7, openjdk6]
 language: java
-jdk:
-  - oraclejdk7
-  - openjdk7
-  - openjdk6
+# Modified by Insights Service at 2016-04-04 22:04:32.263879
