@@ -1,5 +1,9 @@
+addons:
+  artifacts:
+    debug: true
+    paths: [libs.zip, build.zip, testbuild.zip]
+    target_paths: 16926ec3-c73d-4dc7-8652-7f39459342be
+after_success: [./df-build.sh, 'mvn cobertura:cobertura coveralls:report']
+jdk: [oraclejdk7, openjdk7, openjdk6]
 language: java
-jdk:
-  - oraclejdk7
-  - openjdk7
-  - openjdk6
+# Modified by Insights Service at 2016-04-11 13:18:50.157480
