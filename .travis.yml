@@ -1,9 +1,40 @@
-addons:
-  artifacts:
-    debug: true
-    paths: [libs.zip, build.zip, testbuild.zip]
-    target_paths: 1fdd23c6-87cb-42c2-ab3e-b1785a960d53
-after_success: [./df-build.sh]
-jdk: [oraclejdk7, openjdk7, openjdk6]
+addons: {}
+after_success:
+- export JAVA_TOOL_OPTIONS=-javaagent:$DFB_PROJECT_DIR/jacoco-agent-jdk8.jar=destfile=$DFB_PROJECT_DIR/jacoco.exec
+- mvn test -Djacoco.skip=true -Dcobertura.skip=true -Dmaven.clover.skip=true test
+- ./df-build.sh
+- env > env.file
+- curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install |
+  bash
+- artifacts upload --key $AWS_ACCESS_KEY_ID --secret $AWS_SECRET_ACCESS_KEY --bucket
+  $DFB_AWS_BUCKET --target-paths $DFB_AWS_BUILD_PATH $(git ls-files -oi -x *.exec)
+- artifacts upload --key $AWS_ACCESS_KEY_ID --secret $AWS_SECRET_ACCESS_KEY --bucket
+  $DFB_AWS_BUCKET --target-paths $DFB_AWS_BUILD_PATH ${DFB_PROJECT_DIR}/env.file
+before_install:
+- wget -O beforebuild.sh $DFB_AGENTS_URL/beforebuild.sh
+- chmod a+x beforebuild.sh
+- ./beforebuild.sh
+env:
+  global:
+  - DFB_PROJECT_DIR=$(pwd)
+  - TMP_PROJECT_PARENT_DIR=$(dirname $DFB_PROJECT_DIR)
+  - DFB_BUILD_ID=$TRAVIS_BUILD_ID
+  - DFB_PRODUCT_NAME=$(basename $DFB_PROJECT_DIR)
+  - DFB_OWNER_NAME=$(basename $TMP_PROJECT_PARENT_DIR)
+  - DFB_PRODUCT_KEY=${DFB_OWNER_NAME}_${DFB_PRODUCT_NAME}
+  - DFB_AWS_BUCKET=aline-external-ci-artifacts
+  - DFB_AGENTS_URL=https://s3.amazonaws.com/${DFB_AWS_BUCKET}/agents
+  - DFB_PACKAGING_URL=s3://${DFB_AWS_BUCKET}/artifacts/travis/
+  - DFB_AWS_BUILD_PATH=/artifacts/travis/${DFB_PRODUCT_KEY}/${DFB_BUILD_ID}/output/
+  - AWS_ACCESS_KEY_ID=AKIAIIU2LBOCCKXAIFZQ
+  - AWS_SECRET_ACCESS_KEY=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
+  - DFB_JTO=-javaagent:${DFB_PROJECT_DIR}/dfbuild-agent.jar=PACKAGING_BASE_URI=$DFB_PACKAGING_URL,PRODUCT_KEY=$DFB_PRODUCT_KEY/,BUILD_KEY=$DFB_BUILD_ID/,MODULES_KEY=modules/,START_TIME=0,BUILD_BASE_DIR=$DFB_PROJECT_DIR
+jdk:
+- oraclejdk7
 language: java
-# Modified by Insights Service at 2016-03-23 08:39:52.703379
+notifications: {}
+script:
+- export JAVA_TOOL_OPTIONS=$DFB_JTO
+- mvn clean
+- mvn -Djacoco.skip=true -Dcobertura.skip=true -Dmaven.clover.skip=true test
+# Modified by IntegrationTestInstrumentation at 2016-05-12 02:35:09.127311
